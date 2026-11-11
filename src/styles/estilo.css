@@ -1,0 +1,49 @@
+/* =========================================================
+   TUMO NET — Variables de marca (paleta oficial TUMO)
+   ========================================================= */
+
+:root {
+  /* ---- Paleta TUMO (14 áreas de foco + color base) ---- */
+  --tumo-base:        #2f343b; /* Pantone 426 C — color institucional oscuro */
+  --tumo-naranja:     #faa61a; /* 130 C */
+  --tumo-naranja-osc: #f15a29; /* 7579 C */
+  --tumo-azul:        #5087c7; /* 7682 C */
+  --tumo-verde:       #8dc63f; /* 368 C */
+  --tumo-violeta:     #702572; /* 259 C */
+  --tumo-lila:        #bd84ba; /* 2351 C */
+  --tumo-magenta:     #962e6a; /* 7648 C */
+  --tumo-rojo:        #da2128; /* 1788 C */
+  --tumo-oliva:       #717430; /* 5757 C */
+  --tumo-terracota:   #b85846; /* 7524 C */
+  --tumo-bordo:       #b7202e; /* 1805 C */
+  --tumo-turquesa:    #0eacbd; /* 631 C */
+  --tumo-celeste:     #659ad2; /* 659 C */
+  --tumo-arena:       #a3a27a; /* 5783 C */
+
+  /* ---- Roles de la interfaz (usar ESTOS en los componentes) ---- */
+  --color-primario:        var(--tumo-violeta);  /* botones, links, foco */
+  --color-primario-hover:  var(--tumo-magenta);
+  --color-acento:          var(--tumo-naranja);  /* detalles decorativos */
+  --color-texto:           var(--tumo-base);
+  --color-texto-suave:     #6b7078;
+  --color-fondo:           #ffffff;
+  --color-superficie:      #f5f5f6;              /* fondo de inputs */
+  --color-borde:           #dcdde0;
+  --color-error:           var(--tumo-rojo);
+  --color-exito:           #3d7a1f;              /* verde oscurecido para que el texto se lea */
+
+  /* ---- Tipografía (confirmar nombres en el manual de marca) ---- */
+  --fuente-titulos: 'Montserrat', system-ui, sans-serif;
+  --fuente-texto:   'Montserrat', system-ui, sans-serif;
+
+  /* ---- Medidas ---- */
+  --radio: 12px;
+  --espacio: 16px;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente-texto);
+}
