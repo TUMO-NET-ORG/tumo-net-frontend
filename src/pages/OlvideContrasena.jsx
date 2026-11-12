@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { solicitarRecuperacion } from '../services/authService';
 import Input from '../components/Input.jsx';
-import './Login.css';
+import './auth.css';
 
 function OlvideContrasena() {
   const [email, setEmail] = useState('');
