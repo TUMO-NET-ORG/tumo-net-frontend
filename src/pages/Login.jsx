@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import './Login.css';
+import './auth.css';
 import Input from '../components/Input.jsx';
+import PasswordInput from '../components/PasswordInput.jsx';
 import { useAuth } from '../context/useAuth';
 import { mensajeDelServidor } from '../services/password';
 
@@ -69,7 +70,7 @@ function Login() {
           </svg>
         </div>
         <h1 className="auth__titulo">TUMO<span>NET</span></h1>
-        <p className="auth__subtitulo">La comunidad de TUMO Montevideo</p>
+        <p className="auth__subtitulo">La comunidad de TUMO Uruguay</p>
       </header>
 
       <form className="auth__form" onSubmit={handleSubmit}>
@@ -83,7 +84,7 @@ function Login() {
           required
         />
 
-        <Input
+        <PasswordInput
           label="Contraseña"
           id="password"
           type="password"

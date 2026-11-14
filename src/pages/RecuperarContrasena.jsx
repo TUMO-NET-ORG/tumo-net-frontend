@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { restablecerPassword } from '../services/authService.js';
 import Input from '../components/Input.jsx';
 import { MENSAJE_PASSWORD, mensajeDelServidor, passwordValida } from '../services/password';
-import './Login.css';
+import './auth.css';
 
 function RecuperarContrasena() {
   const [token] = useState(() => {
