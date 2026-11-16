@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout.jsx';
-import Input from '../components/Input';
+import Input from '../components/Input.jsx';
+import PasswordInput from '../components/PasswordInput.jsx';
 import { registrar, reenviarCodigo, verificarCodigo } from '../services/usuariosService.js';
 import {MENSAJE_CEDULA, cedulaValida} from '../services/cedula.js';
 import { LARGO_MINIMO_PASSWORD, MENSAJE_PASSWORD, mensajeDelServidor, passwordValida } from '../services/password';
@@ -216,8 +217,9 @@ function Registro() {
 
         <div className="auth__fila">
           <div className="auth__campo">
-            <Input label="Documento" id="documento" name="documento"
+            <Input label="Cédula de identidad" id="documento" name="documento"
               value={form.documento} onChange={handleChange} maxLength={20} required />
+            <p id="documento-ayuda" className="auth__ayuda">Sin puntos ni guiones</p>
           </div>
           <div className="auth__campo">
             <Input label="Fecha de nacimiento (opcional)" id="fechaNacimiento" name="fechaNacimiento" type="date"
@@ -230,12 +232,13 @@ function Registro() {
 
         <div className="auth__fila">
           <div className="auth__campo">
-            <Input label="Contraseña" id="password" name="password" type="password"
-              autoComplete="new-password" minLength={10} title={MENSAJE_PASSWORD}
+            <PasswordInput label="Contraseña" id="password" name="password" type="password"
+              autoComplete="new-password" minLength={LARGO_MINIMO_PASSWORD} title={MENSAJE_PASSWORD}
               value={form.password} onChange={handleChange} required />
+            <p id="password-ayuda" className="auth__ayuda">{MENSAJE_PASSWORD}</p>
           </div>
           <div className="auth__campo">
-            <Input label="Repetí la contraseña" id="confirmacion" name="confirmacion" type="password"
+            <PasswordInput label="Repetí la contraseña" id="confirmacion" name="confirmacion" type="password"
               value={form.confirmacion} onChange={handleChange} required />
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { DISCIPLINAS } from '../data/feedEjemplo';
-import '../pages/Login.css';
+import '../pages/auth.css';
 
 // Marco común de las pantallas de acceso (login, registro y recuperación).
 // En el celular muestra solo el formulario; desde 768px el formulario va en

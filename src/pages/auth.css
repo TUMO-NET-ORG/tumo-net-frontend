@@ -233,3 +233,201 @@
 .auth__enlace:hover {
   text-decoration: none;
 }
+
+/* ---------- Enlaces y mensajes que usaban las pantallas sin estilo ---------- */
+
+.auth__exito {
+  color: var(--color-exito);
+  background: #e6f4ea;
+  padding: 12px 16px;
+  border-radius: var(--radio);
+  line-height: 1.5;
+}
+
+.auth__volver {
+  display: block;
+  margin-top: 24px;
+  text-align: center;
+  color: var(--color-primario);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth__volver:hover,
+.auth__link:hover {
+  text-decoration: underline;
+}
+
+.auth__check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primario);
+}
+
+
+/* ---------- Filas de dos campos (registro) ----------
+   En el celular no agrupan nada: los campos quedan en una columna. */
+
+.auth__fila,
+.auth__campo {
+  display: contents;
+}
+
+
+/* =========================================================
+   Marco de las pantallas de acceso (AuthLayout), mobile-first
+   - base:   celular, igual que antes (sin panel de marca)
+   - 768px:  formulario en una tarjeta
+   - 1024px: pantalla dividida con el panel de marca
+   ========================================================= */
+
+.auth-layout__marca {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .auth-layout__formulario {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    padding: 48px 24px;
+    box-sizing: border-box;
+    background: var(--color-superficie);
+  }
+
+  .auth {
+    width: 100%;
+    min-height: auto;
+    margin: 0;
+    padding: 40px;
+    border: 1px solid var(--color-borde);
+    border-radius: 20px;
+    background: var(--color-fondo);
+    box-shadow: 0 12px 40px rgba(47, 52, 59, 0.08);
+  }
+
+  .auth--amplio {
+    max-width: 560px;
+  }
+
+  .auth__encabezado {
+    margin-bottom: 32px;
+  }
+
+  .auth__fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 0 16px;
+  }
+
+  .auth__campo {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .auth-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    min-height: 100vh;
+  }
+
+  .auth-layout__marca {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    padding: 64px;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: var(--color-primario);
+    color: #fff;
+  }
+
+  /* Círculos decorativos con colores de la paleta TUMO */
+  .auth-layout__marca::before,
+  .auth-layout__marca::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .auth-layout__marca::before {
+    top: -120px;
+    right: -120px;
+    width: 340px;
+    height: 340px;
+    background: var(--tumo-magenta);
+    opacity: 0.6;
+  }
+
+  .auth-layout__marca::after {
+    bottom: -90px;
+    left: -60px;
+    width: 220px;
+    height: 220px;
+    background: var(--color-acento);
+    opacity: 0.85;
+  }
+
+  .auth-layout__marca > * {
+    position: relative;
+    max-width: 440px;
+  }
+
+  .auth-layout__logo {
+    margin: 0 0 40px;
+    font-family: var(--fuente-titulos);
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  .auth-layout__logo span {
+    color: var(--color-acento);
+  }
+
+  .auth-layout__titulo {
+    margin: 0 0 16px;
+    font-family: var(--fuente-titulos);
+    font-size: 2.4rem;
+    line-height: 1.15;
+  }
+
+  .auth-layout__texto {
+    margin: 0 0 32px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0.9;
+  }
+
+  .auth-layout__disciplinas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .auth-layout__disciplinas li {
+    padding: 6px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  /* El panel de marca ya muestra la identidad: el ícono del login sobra */
+  .auth__logo {
+    display: none;
+  }
+}
