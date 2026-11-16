@@ -1,0 +1,235 @@
+/* =========================================================
+   Pantallas de autenticación: login, registro y verificación
+   ========================================================= */
+
+
+/* ---------- Contenedor de toda la pantalla ---------- */
+
+.auth {
+  min-height: 100vh;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 48px 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+/* ---------- Encabezado: logo, título y subtítulo ---------- */
+
+.auth__encabezado {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.auth__logo {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 24px;
+  border-radius: 22px;
+  background: var(--color-primario);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 8px 24px rgba(112, 37, 114, 0.25);
+}
+
+.auth__titulo {
+  font-family: var(--fuente-titulos);
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 12px;
+  color: var(--color-texto);
+}
+
+.auth__titulo span {
+  color: var(--color-primario);
+}
+
+.auth__subtitulo {
+  color: var(--color-texto-suave);
+  margin: 0;
+}
+
+
+/* ---------- Formulario: campos, ayudas y checkbox ---------- */
+
+.auth__form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth__label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.auth__input {
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  font: inherit;
+  line-height: 1.5; /* alto fijo de la línea: el ojito de la contraseña depende de esto */
+}
+
+.auth__input:focus {
+  outline: 2px solid var(--color-primario);
+  background: var(--color-fondo);
+}
+
+/* Texto de ayuda debajo de un campo (ej.: "Sin puntos ni guiones").
+   El margen negativo lo acerca al campo; el de abajo lo separa del siguiente label. */
+.auth__ayuda {
+  margin: -12px 0 20px;
+  font-size: 0.8rem;
+  color: var(--color-texto-suave);
+}
+
+.auth__check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+
+/* ---------- Campo de contraseña con ojito (PasswordInput) ---------- */
+
+.password-input {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px; /* el margen pasa del input al contenedor */
+}
+
+.password-input input {
+  margin-bottom: 0;
+  padding-right: 48px; /* lugar para que el texto no quede debajo del ojito */
+}
+
+.password-input__boton {
+  position: absolute;
+  right: 4px;
+  bottom: 0;
+  width: 40px;
+  height: 54px; /* mismo alto que .auth__input: 24px de línea + 28px de padding + 2px de borde */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-texto-suave);
+  cursor: pointer;
+}
+
+.password-input__boton:hover {
+  color: var(--color-texto);
+}
+
+.password-input__boton:focus-visible {
+  outline: 2px solid var(--color-primario);
+  border-radius: var(--radio);
+}
+
+/* Edge trae su propio ojito: lo ocultamos para que no aparezcan dos */
+.password-input input::-ms-reveal {
+  display: none;
+}
+
+
+/* ---------- Mensajes de error y éxito ---------- */
+
+.auth__error {
+  color: var(--color-error);
+  font-size: 0.9rem;
+  margin: 0 0 16px;
+}
+
+.mensaje-exito {
+  color: #1a7f37;
+  background: #e6f4ea;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin: 0 0 16px;
+}
+
+
+/* ---------- Botones y enlaces ---------- */
+
+.auth__boton {
+  padding: 16px;
+  border: none;
+  border-radius: var(--radio);
+  background: var(--color-primario);
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+}
+
+.auth__boton:hover {
+  background: var(--color-primario-hover);
+}
+
+/* Va después del :hover para que un botón deshabilitado no cambie de color */
+.auth__boton:disabled {
+  background: var(--color-primario);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Enlace secundario (ej.: "¿Olvidaste tu contraseña?", "Reenviar código").
+   Sirve tanto para <a> como para <button>. */
+.auth__link {
+  align-self: flex-end;
+  margin: -8px 0 24px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-primario);
+  font: inherit;
+  font-size: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.auth__link:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Cuando va justo después del botón principal (pantalla del código) */
+.auth__boton + .auth__link {
+  align-self: center;
+  margin: 16px 0 0;
+}
+
+
+/* ---------- Pie: "¿Ya tenés cuenta? Iniciá sesión" ---------- */
+
+.auth__pie {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-texto-suave);
+}
+
+.auth__enlace {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.auth__enlace:hover {
+  text-decoration: none;
+}

@@ -3,7 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout.jsx';
 import Input from '../components/Input';
 import { registrar, reenviarCodigo, verificarCodigo } from '../services/usuariosService.js';
-import { MENSAJE_PASSWORD, mensajeDelServidor, passwordValida } from '../services/password';
+import {MENSAJE_CEDULA, cedulaValida} from '../services/cedula.js';
+import { LARGO_MINIMO_PASSWORD, MENSAJE_PASSWORD, mensajeDelServidor, passwordValida } from '../services/password';
 
 const VERSION_TERMINOS = '1.0';
 
@@ -40,6 +41,11 @@ function Registro() {
   async function handleRegistro(e) {
     e.preventDefault();
     setError('');
+
+    if (!cedulaValida(form.documento)) {
+      setError(MENSAJE_CEDULA);
+      return;
+    }
 
     if (!passwordValida(form.password)) {
       setError(MENSAJE_PASSWORD);
