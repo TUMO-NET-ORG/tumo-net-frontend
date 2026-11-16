@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { solicitarRecuperacion } from '../services/authService';
 import Input from '../components/Input.jsx';
-import './auth.css';
+import AuthLayout from '../components/AuthLayout.jsx';
 
 function OlvideContrasena() {
   const [email, setEmail] = useState('');
@@ -30,7 +30,7 @@ function OlvideContrasena() {
   }
 
   return (
-    <main className="auth">
+    <AuthLayout>
       <header className="auth__encabezado">
         <h1 className="auth__titulo">Recuperar contraseña</h1>
         {!enviado && (
@@ -65,7 +65,7 @@ function OlvideContrasena() {
       )}
 
       <Link to="/login" className="auth__volver">Volver a iniciar sesión</Link>
-    </main>
+    </AuthLayout>
   );
 }
 

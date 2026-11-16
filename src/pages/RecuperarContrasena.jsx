@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { restablecerPassword } from '../services/authService.js';
 import Input from '../components/Input.jsx';
 import { MENSAJE_PASSWORD, mensajeDelServidor, passwordValida } from '../services/password';
-import './auth.css';
+import AuthLayout from '../components/AuthLayout.jsx';
 
 function RecuperarContrasena() {
   const [token] = useState(() => {
@@ -62,7 +62,7 @@ function RecuperarContrasena() {
 
   if (!token) {
     return (
-      <main className="auth">
+      <AuthLayout>
         <header className="auth__encabezado">
           <h1 className="auth__titulo">Enlace inválido</h1>
           <p className="auth__subtitulo">
@@ -70,24 +70,24 @@ function RecuperarContrasena() {
           </p>
         </header>
         <Link to="/forgot-password" className="auth__boton">Pedir un enlace nuevo</Link>
-      </main>
+      </AuthLayout>
     );
   }
 
   if (listo) {
     return (
-      <main className="auth">
+      <AuthLayout>
         <header className="auth__encabezado">
           <h1 className="auth__titulo">¡Listo!</h1>
           <p className="mensaje-exito">Tu contraseña se actualizó correctamente.</p>
         </header>
         <Link to="/login" className="auth__boton">Iniciar sesión</Link>
-      </main>
+      </AuthLayout>
     );
   }
 
   return (
-    <main className="auth">
+    <AuthLayout>
       <header className="auth__encabezado">
         <h1 className="auth__titulo">Nueva contraseña</h1>
         <p className="auth__subtitulo">Elegí una contraseña nueva para tu cuenta.</p>
@@ -122,7 +122,7 @@ function RecuperarContrasena() {
       </form>
 
       <Link to="/forgot-password" className="auth__volver">Pedir un enlace nuevo</Link>
-    </main>
+    </AuthLayout>
   );
 }
 

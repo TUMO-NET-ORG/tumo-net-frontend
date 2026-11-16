@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import './auth.css';
+import AuthLayout from '../components/AuthLayout.jsx';
 import Input from '../components/Input.jsx';
 import PasswordInput from '../components/PasswordInput.jsx';
 import { useAuth } from '../context/useAuth';
@@ -60,7 +60,7 @@ function Login() {
   }
 
   return (
-    <main className="auth">
+    <AuthLayout>
       <header className="auth__encabezado">
         <div className="auth__logo">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
@@ -113,7 +113,7 @@ function Login() {
           <Link to="/alta" className="auth__enlace">Registrate</Link>
         </p>
       </form>
-    </main>
+    </AuthLayout>
   );
 }
 
