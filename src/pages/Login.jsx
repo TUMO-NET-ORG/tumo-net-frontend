@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import './Login.css';
+import AuthLayout from '../components/AuthLayout.jsx';
 import Input from '../components/Input.jsx';
+import PasswordInput from '../components/PasswordInput.jsx';
 import { useAuth } from '../context/useAuth';
 import { mensajeDelServidor } from '../services/password';
 
@@ -59,7 +60,7 @@ function Login() {
   }
 
   return (
-    <main className="auth">
+    <AuthLayout>
       <header className="auth__encabezado">
         <div className="auth__logo">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
@@ -69,7 +70,7 @@ function Login() {
           </svg>
         </div>
         <h1 className="auth__titulo">TUMO<span>NET</span></h1>
-        <p className="auth__subtitulo">La comunidad de TUMO Montevideo</p>
+        <p className="auth__subtitulo">La comunidad de TUMO Uruguay</p>
       </header>
 
       <form className="auth__form" onSubmit={handleSubmit}>
@@ -83,7 +84,7 @@ function Login() {
           required
         />
 
-        <Input
+        <PasswordInput
           label="Contraseña"
           id="password"
           type="password"
@@ -112,7 +113,7 @@ function Login() {
           <Link to="/alta" className="auth__enlace">Registrate</Link>
         </p>
       </form>
-    </main>
+    </AuthLayout>
   );
 }
 

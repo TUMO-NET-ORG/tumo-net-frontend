@@ -63,9 +63,21 @@ export function AuthProvider({ children }) {
     setUsuario(null);
   }, []);
 
+  const actualizarSesion = useCallback((token, datosUsuario) => {
+    guardarSesion(token, datosUsuario);
+    setUsuario(datosUsuario);
+  }, []);
+
   const valor = useMemo(
-    () => ({ usuario, cargando, autenticado: Boolean(usuario), login, logout }),
-    [usuario, cargando, login, logout],
+    () => ({
+      usuario,
+      cargando,
+      autenticado: Boolean(usuario),
+      login,
+      logout,
+      actualizarSesion,
+    }),
+    [usuario, cargando, login, logout, actualizarSesion],
   );
 
   return <AuthContext.Provider value={valor}>{children}</AuthContext.Provider>;
