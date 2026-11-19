@@ -35,6 +35,14 @@ const ACCIONES_ESTADO = [
   ['suspendido', 'Suspender'],
 ];
 
+function fechaActualLocal() {
+  const hoy = new Date();
+  const anio = hoy.getFullYear();
+  const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoy.getDate()).padStart(2, '0');
+  return `${anio}-${mes}-${dia}`;
+}
+
 function EditarUsuarioAdministrador() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -107,6 +115,9 @@ function EditarUsuarioAdministrador() {
 
   function handleChange(event) {
     const { name, value } = event.target;
+    if (name === 'fechaNacimiento' && value && value > fechaActualLocal()) {
+      return;
+    }
     setForm((actual) => ({ ...actual, [name]: value }));
   }
 
@@ -203,6 +214,10 @@ function EditarUsuarioAdministrador() {
       setError(MENSAJE_CEDULA);
       return;
     }
+    if (form.fechaNacimiento && form.fechaNacimiento > fechaActualLocal()) {
+      setError('La fecha de nacimiento no puede ser posterior a hoy');
+      return;
+    }
 
     const cambios = {};
     Object.entries(form).forEach(([campo, valor]) => {
@@ -276,12 +291,12 @@ function EditarUsuarioAdministrador() {
       <form className="auth__form" onSubmit={handleGuardar}>
         <div className="auth__fila">
           <div className="auth__campo">
-            <Input label="Nombre" id="nombre" name="nombre"
+            <Input label="Nombre *" id="nombre" name="nombre"
               value={form.nombre} onChange={handleChange} maxLength={100} required />
             {mensajeCampo('nombre') && <p className="auth__error">{mensajeCampo('nombre')}</p>}
           </div>
           <div className="auth__campo">
-            <Input label="Apellido" id="apellido" name="apellido"
+            <Input label="Apellido *" id="apellido" name="apellido"
               value={form.apellido} onChange={handleChange} maxLength={100} required />
             {mensajeCampo('apellido') && <p className="auth__error">{mensajeCampo('apellido')}</p>}
           </div>
@@ -289,20 +304,21 @@ function EditarUsuarioAdministrador() {
 
         <div className="auth__fila">
           <div className="auth__campo">
-            <Input label="Cédula de identidad" id="documento" name="documento"
+            <Input label="Cédula de identidad *" id="documento" name="documento"
               value={form.documento} onChange={handleChange} maxLength={20} required />
           </div>
           <div className="auth__campo">
             <Input label="Fecha de nacimiento" id="fechaNacimiento" name="fechaNacimiento"
-              type="date" value={form.fechaNacimiento} onChange={handleChange} />
+              type="date" value={form.fechaNacimiento} onChange={handleChange}
+              max={fechaActualLocal()} />
           </div>
         </div>
 
-        <Input label="Email" id="email" name="email" type="email"
+        <Input label="Email *" id="email" name="email" type="email"
           value={form.email} readOnly />
 
         <div className="auth__campo">
-          <label htmlFor="rol" className="auth__label">Rol</label>
+          <label htmlFor="rol" className="auth__label">Rol *</label>
           <select id="rol" name="rol" className="auth__select"
             value={form.rol} onChange={handleChange}>
             {ROLES.map(([clave, nombre]) => (
@@ -311,9 +327,9 @@ function EditarUsuarioAdministrador() {
           </select>
         </div>
 
-        <Input label="Foto (opcional)" id="fotoUrl" name="fotoUrl" type="url"
+        <Input label="Foto" id="fotoUrl" name="fotoUrl" type="url"
           value={form.fotoUrl} onChange={handleChange} maxLength={500} />
-        <Input label="Portfolio (opcional)" id="urlPortfolio" name="urlPortfolio" type="url"
+        <Input label="Portfolio" id="urlPortfolio" name="urlPortfolio" type="url"
           value={form.urlPortfolio} onChange={handleChange} maxLength={500} />
 
         {error && <p className="auth__error">{error}</p>}
