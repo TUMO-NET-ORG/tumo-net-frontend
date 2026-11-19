@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { restablecerPassword } from '../services/authService.js';
+import {
+  establecerPasswordInvitacion,
+  obtenerTipoTokenPassword,
+  restablecerPassword,
+} from '../services/authService.js';
 import Input from '../components/Input.jsx';
 import { MENSAJE_PASSWORD, mensajeDelServidor, passwordValida } from '../services/password';
 import AuthLayout from '../components/AuthLayout.jsx';
@@ -27,6 +31,15 @@ function RecuperarContrasena() {
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
   const [listo, setListo] = useState(false);
+  const [tipoToken, setTipoToken] = useState(null);
+  const [aceptaTerminos, setAceptaTerminos] = useState(false);
+
+  useEffect(() => {
+    if (!token) return;
+    obtenerTipoTokenPassword(token)
+      .then((datos) => setTipoToken(datos.tipo))
+      .catch(() => setTipoToken('invalido'));
+  }, [token]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -45,7 +58,16 @@ function RecuperarContrasena() {
     setCargando(true);
 
     try {
-      await restablecerPassword(token, password);
+      if (tipoToken === 'invitacion' && !aceptaTerminos) {
+        setError('Es necesario aceptar los términos y condiciones');
+        return;
+      }
+
+      if (tipoToken === 'invitacion') {
+        await establecerPasswordInvitacion(token, password, aceptaTerminos);
+      } else {
+        await restablecerPassword(token, password);
+      }
       setListo(true);
     } catch (err) {
       if (!err.response) {
@@ -66,8 +88,28 @@ function RecuperarContrasena() {
         <header className="auth__encabezado">
           <h1 className="auth__titulo">Enlace inválido</h1>
           <p className="auth__subtitulo">
-            El enlace no es válido. Pedí uno nuevo para recuperar tu contraseña.
+            El enlace no es válido o venció. Pedí uno nuevo.
           </p>
+        </header>
+        <Link to="/forgot-password" className="auth__boton">Pedir un enlace nuevo</Link>
+      </AuthLayout>
+    );
+  }
+
+  if (!tipoToken) {
+    return (
+      <AuthLayout>
+        <p className="auth__subtitulo">Validando el enlace…</p>
+      </AuthLayout>
+    );
+  }
+
+  if (tipoToken === 'invalido') {
+    return (
+      <AuthLayout>
+        <header className="auth__encabezado">
+          <h1 className="auth__titulo">Enlace inválido</h1>
+          <p className="auth__subtitulo">El enlace venció o ya fue utilizado.</p>
         </header>
         <Link to="/forgot-password" className="auth__boton">Pedir un enlace nuevo</Link>
       </AuthLayout>
@@ -89,8 +131,14 @@ function RecuperarContrasena() {
   return (
     <AuthLayout>
       <header className="auth__encabezado">
-        <h1 className="auth__titulo">Nueva contraseña</h1>
-        <p className="auth__subtitulo">Elegí una contraseña nueva para tu cuenta.</p>
+        <h1 className="auth__titulo">
+          {tipoToken === 'invitacion' ? 'Activá tu cuenta' : 'Nueva contraseña'}
+        </h1>
+        <p className="auth__subtitulo">
+          {tipoToken === 'invitacion'
+            ? 'Verificá tu email, aceptá los términos y definí tu contraseña.'
+            : 'Elegí una contraseña nueva para tu cuenta.'}
+        </p>
         <p className="auth__subtitulo">{MENSAJE_PASSWORD}.</p>
       </header>
 
@@ -113,6 +161,17 @@ function RecuperarContrasena() {
           onChange={(e) => setConfirmacion(e.target.value)}
           required
         />
+
+        {tipoToken === 'invitacion' && (
+          <label className="auth__check">
+            <input
+              type="checkbox"
+              checked={aceptaTerminos}
+              onChange={(event) => setAceptaTerminos(event.target.checked)}
+            />
+            Acepto los términos y condiciones
+          </label>
+        )}
 
         {error && <p className="auth__error">{error}</p>}
 

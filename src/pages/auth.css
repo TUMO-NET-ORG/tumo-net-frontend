@@ -81,6 +81,22 @@
   background: var(--color-fondo);
 }
 
+.auth__select {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  background: var(--color-superficie);
+  font: inherit;
+  cursor: pointer;
+}
+
+.auth__select:focus {
+  outline: 2px solid var(--color-primario);
+  background: var(--color-fondo);
+}
+
 /* Texto de ayuda debajo de un campo (ej.: "Sin puntos ni guiones").
    El margen negativo lo acerca al campo; el de abajo lo separa del siguiente label. */
 .auth__ayuda {
