@@ -23,6 +23,14 @@ const FORMULARIO_INICIAL = {
   rol: 'alumno',
 };
 
+function fechaActualLocal() {
+  const hoy = new Date();
+  const anio = hoy.getFullYear();
+  const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoy.getDate()).padStart(2, '0');
+  return `${anio}-${mes}-${dia}`;
+}
+
 function AltaUsuarioAdministrador() {
   const [form, setForm] = useState(FORMULARIO_INICIAL);
   const [creado, setCreado] = useState(null);
@@ -32,12 +40,18 @@ function AltaUsuarioAdministrador() {
 
   function handleChange(event) {
     const { name, value } = event.target;
+    if (name === 'fechaNacimiento' && value && value > fechaActualLocal()) {
+      return;
+    }
     setForm((actual) => ({ ...actual, [name]: value }));
   }
 
   function validarFormulario() {
     if (!cedulaValida(form.documento)) {
       return MENSAJE_CEDULA;
+    }
+    if (form.fechaNacimiento && form.fechaNacimiento > fechaActualLocal()) {
+      return 'La fecha de nacimiento no puede ser posterior a hoy';
     }
     return '';
   }
@@ -153,7 +167,8 @@ function AltaUsuarioAdministrador() {
           </div>
           <div className="auth__campo">
             <Input label="Fecha de nacimiento" id="fechaNacimiento" name="fechaNacimiento"
-              type="date" value={form.fechaNacimiento} onChange={handleChange} />
+              type="date" value={form.fechaNacimiento} onChange={handleChange}
+              max={fechaActualLocal()} />
           </div>
         </div>
 

@@ -231,6 +231,16 @@ function Inicio() {
                 </button>
               </>
             )}
+            {['administrador', 'staff', 'tutor'].includes(usuario.rol) && (
+              <button
+                type="button"
+                className="feed__nav-item"
+                onClick={() => navigate('/administracion/grupos')}
+              >
+                <Icono nombre="perfil" tamano={22} />
+                Grupos
+              </button>
+            )}
             <button type="button" className="feed__nav-item" onClick={proximamente}>
               <Icono nombre="buscar" tamano={22} />
               Buscar
