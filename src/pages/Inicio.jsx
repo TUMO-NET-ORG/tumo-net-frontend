@@ -211,6 +211,26 @@ function Inicio() {
               <Icono nombre="inicio" relleno tamano={22} />
               Inicio
             </button>
+            {usuario.rol === 'administrador' && (
+              <>
+                <button
+                  type="button"
+                  className="feed__nav-item"
+                  onClick={() => navigate('/administracion/usuarios')}
+                >
+                  <Icono nombre="perfil" tamano={22} />
+                  Usuarios
+                </button>
+                <button
+                  type="button"
+                  className="feed__nav-item"
+                  onClick={() => navigate('/administracion/usuarios/nuevo')}
+                >
+                  <Icono nombre="mas" tamano={22} />
+                  Crear usuario
+                </button>
+              </>
+            )}
             <button type="button" className="feed__nav-item" onClick={proximamente}>
               <Icono nombre="buscar" tamano={22} />
               Buscar
@@ -353,6 +373,27 @@ function Inicio() {
             <p className="feed__hoja-nombre">{nombreCompleto}</p>
             <p className="feed__hace">{usuario.email}</p>
             <span className="feed__rol">{rol}</span>
+
+            {usuario.rol === 'administrador' && (
+              <>
+                <button
+                  type="button"
+                  className="feed__salir"
+                  onClick={() => navigate('/administracion/usuarios')}
+                >
+                  <Icono nombre="perfil" tamano={20} />
+                  Usuarios
+                </button>
+                <button
+                  type="button"
+                  className="feed__salir"
+                  onClick={() => navigate('/administracion/usuarios/nuevo')}
+                >
+                  <Icono nombre="mas" tamano={20} />
+                  Crear usuario
+                </button>
+              </>
+            )}
 
             <button
               type="button"

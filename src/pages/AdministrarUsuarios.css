@@ -1,0 +1,353 @@
+.administracion {
+  min-height: 100vh;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  box-sizing: border-box;
+}
+
+.administracion__encabezado {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.administracion__encabezado h1 {
+  margin: 8px 0 4px;
+  font-size: 2rem;
+}
+
+.administracion__encabezado p {
+  margin: 0;
+  color: var(--color-texto-suave);
+}
+
+.administracion__volver {
+  color: var(--color-primario);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.administracion__crear,
+.administracion__buscar,
+.administracion__editar,
+.administracion__paginacion button {
+  border: none;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.administracion__crear {
+  padding: 12px 16px;
+  background: var(--color-primario);
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.administracion__filtros {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 1px solid var(--color-borde);
+  border-radius: 16px;
+  background: var(--color-fondo);
+}
+
+.administracion__filtros label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.administracion__filtros input,
+.administracion__filtros select {
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--color-borde);
+  border-radius: 10px;
+  background: var(--color-superficie);
+  font: inherit;
+}
+
+.administracion__buscar {
+  min-height: 44px;
+  background: var(--color-primario);
+  color: #fff;
+}
+
+.administracion__tabla-contenedor {
+  overflow-x: auto;
+  border: 1px solid var(--color-borde);
+  border-radius: 16px;
+  background: var(--color-fondo);
+}
+
+.administracion__tabla {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.administracion__tabla th,
+.administracion__tabla td {
+  padding: 14px;
+  border-bottom: 1px solid var(--color-borde);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.administracion__tabla th {
+  font-size: 0.85rem;
+  color: var(--color-texto-suave);
+}
+
+.administracion__tabla td strong,
+.administracion__tabla td small {
+  display: block;
+}
+
+.administracion__tabla td small {
+  margin-top: 3px;
+  color: var(--color-texto-suave);
+}
+
+.administracion__editar {
+  padding: 8px 12px;
+  background: #f3e6f3;
+  color: var(--color-primario);
+}
+
+.administracion__estado-accion {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.administracion__estado-accion--activo {
+  background: #e6f4ea;
+  color: #1a7f37;
+}
+
+.administracion__estado-accion--dado_de_baja,
+.administracion__estado-accion--suspendido {
+  background: #fdeaea;
+  color: var(--color-error);
+}
+
+.administracion__estado-accion:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.administracion__estado-cambio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  margin: 20px 0;
+  padding: 16px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-borde);
+  border-radius: 16px;
+  background: var(--color-fondo);
+}
+
+.administracion__estado-cambio h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.administracion__estado-cambio .administracion__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.administracion__estado-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--color-superficie);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.administracion__estado-badge--activo {
+  background: #e6f4ea;
+  color: #1a7f37;
+}
+
+.administracion__estado-badge--dado_de_baja,
+.administracion__estado-badge--suspendido {
+  background: #fdeaea;
+  color: var(--color-error);
+}
+
+.administracion__estado,
+.administracion__error {
+  padding: 16px;
+  text-align: center;
+}
+
+.administracion__error {
+  color: var(--color-error);
+}
+
+.administracion__paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+  color: var(--color-texto-suave);
+}
+
+.administracion__paginacion div {
+  display: flex;
+  gap: 8px;
+}
+
+.administracion__paginacion button {
+  padding: 10px 12px;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+}
+
+.administracion__paginacion button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.administracion__email-cambio {
+  margin: 20px 0;
+  padding: 16px;
+  border: 1px solid var(--color-borde);
+  border-radius: 16px;
+  background: var(--color-fondo);
+}
+
+.administracion__email-cambio h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.administracion__email-cambio p {
+  color: var(--color-texto-suave);
+}
+
+.administracion__modal-fondo {
+  position: fixed;
+  z-index: 10;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(31 41 55 / 45%);
+}
+
+.administracion__modal {
+  width: min(100%, 420px);
+  padding: 24px;
+  border: 1px solid var(--color-borde);
+  border-radius: 16px;
+  background: var(--color-fondo);
+  box-shadow: 0 18px 48px rgb(31 41 55 / 25%);
+}
+
+.administracion__modal h2 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+}
+
+.administracion__modal p {
+  margin: 0;
+  color: var(--color-texto-suave);
+}
+
+.administracion__modal p + p {
+  margin-top: 10px;
+}
+
+.administracion__password-temporal {
+  display: block;
+  margin: 18px 0;
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  user-select: all;
+}
+
+.administracion__modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.administracion__modal-acciones button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.administracion__modal-cancelar {
+  background: var(--color-superficie);
+  color: var(--color-texto);
+}
+
+.administracion__modal-confirmar {
+  background: var(--color-primario);
+  color: #fff;
+}
+
+.administracion__modal-acciones button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.administracion__email-cambio-form {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.administracion__email-cambio-form .auth__label,
+.administracion__email-cambio-form .auth__input {
+  margin-bottom: 0;
+}
+
+.administracion__email-cambio-form .administracion__buscar {
+  padding: 0 16px;
+}
+
+@media (min-width: 768px) {
+  .administracion {
+    padding: 40px 32px;
+  }
+
+  .administracion__filtros {
+    grid-template-columns: minmax(220px, 1fr) 180px 220px auto;
+    align-items: end;
+  }
+}
