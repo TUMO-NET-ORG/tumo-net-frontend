@@ -44,6 +44,25 @@ export function RutaAdministrador() {
   return <Outlet />;
 }
 
+export function RutaGestionGrupos() {
+  const { usuario, autenticado, cargando } = useAuth();
+  const location = useLocation();
+
+  if (cargando) {
+    return <p className="auth__subtitulo">Cargando…</p>;
+  }
+
+  if (!autenticado) {
+    return <Navigate to="/login" replace state={{ desde: location.pathname }} />;
+  }
+
+  if (!['administrador', 'staff', 'tutor'].includes(usuario.rol)) {
+    return <Navigate to="/inicio" replace />;
+  }
+
+  return <Outlet />;
+}
+
 // Login, registro y recuperación: si ya hay sesión, se va al inicio.
 export function RutaPublica() {
   const { autenticado, cargando } = useAuth();
