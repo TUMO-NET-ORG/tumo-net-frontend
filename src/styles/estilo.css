@@ -41,9 +41,22 @@
   --espacio: 16px;
 }
 
+/* ---- Puntos de quiebre (diseño mobile-first) ----
+   CSS no admite variables dentro de @media, así que se usan siempre estos:
+   - base:   celular (una columna, menú inferior)
+   - 768px:  tablet  → @media (min-width: 768px)
+   - 1024px: web     → @media (min-width: 1024px)
+   - 1280px: web ancha (solo ajustes de anchos) */
+
 body {
   margin: 0;
   background: var(--color-fondo);
   color: var(--color-texto);
   font-family: var(--fuente-texto);
+}
+
+/* Foco visible al navegar con teclado (no aparece al hacer clic) */
+:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
 }
