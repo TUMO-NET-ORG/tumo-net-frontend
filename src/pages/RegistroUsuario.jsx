@@ -32,6 +32,8 @@ function Registro() {
   const [error, setError] = useState('');
   const [aviso, setAviso] = useState('');
   const [cargando, setCargando] = useState(false);
+  // El aviso aparece recién cuando se escribió algo en la confirmación y no coincide.
+  const confirmacionDistinta = form.confirmacion !== '' && form.confirmacion !== form.password;
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
@@ -218,7 +220,8 @@ function Registro() {
         <div className="auth__fila">
           <div className="auth__campo">
             <Input label="Cédula de identidad" id="documento" name="documento"
-              value={form.documento} onChange={handleChange} maxLength={20} required />
+              value={form.documento} onChange={handleChange} maxLength={20} required
+              aria-describedby="documento-ayuda" />
             <p id="documento-ayuda" className="auth__ayuda">Sin puntos ni guiones</p>
           </div>
           <div className="auth__campo">
@@ -226,20 +229,31 @@ function Registro() {
               value={form.fechaNacimiento} onChange={handleChange} />
           </div>
         </div>
-
-        <Input label="Email" id="email" name="email" type="email"
-          value={form.email} onChange={handleChange} required />
+        <div className="auth__campo">
+          <Input label="Email" id="email" name="email" type="email"
+            value={form.email} placeholder="tu.email@tumo.world" onChange={handleChange} required
+            aria-describedby="email-ayuda" />
+          <p id="email-ayuda" className="auth__ayuda">Utilizá tu cuenta institucional @tumo.world o @tumo.uy</p>
+        </div>
 
         <div className="auth__fila">
           <div className="auth__campo">
             <PasswordInput label="Contraseña" id="password" name="password" type="password"
               autoComplete="new-password" minLength={LARGO_MINIMO_PASSWORD} title={MENSAJE_PASSWORD}
-              value={form.password} onChange={handleChange} required />
+              value={form.password} onChange={handleChange} required
+              aria-describedby="password-ayuda" />
             <p id="password-ayuda" className="auth__ayuda">{MENSAJE_PASSWORD}</p>
           </div>
           <div className="auth__campo">
             <PasswordInput label="Repetí la contraseña" id="confirmacion" name="confirmacion" type="password"
-              value={form.confirmacion} onChange={handleChange} required />
+              value={form.confirmacion} onChange={handleChange} required
+              aria-invalid={confirmacionDistinta}
+              aria-describedby={confirmacionDistinta ? 'confirmacion-ayuda' : undefined} />
+            {confirmacionDistinta && (
+              <p id="confirmacion-ayuda" className="auth__ayuda auth__ayuda--error">
+                Las contraseñas no coinciden
+              </p>
+            )}
           </div>
         </div>
 

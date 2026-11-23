@@ -18,6 +18,18 @@ function AdministrarGrupos() {
   const [cargandoDetalle, setCargandoDetalle] = useState(false);
   const [grupoAEliminar, setGrupoAEliminar] = useState(null);
 
+  // Busca mientras se escribe: espera a que se deje de tipear un momento
+  // para no mandar un request por cada tecla.
+  useEffect(() => {
+    const espera = setTimeout(() => {
+      const texto = buscar.trim();
+      if (texto === buscarAplicada) return;
+      setPagina(1);
+      setBuscarAplicada(texto);
+    }, 300);
+    return () => clearTimeout(espera);
+  }, [buscar, buscarAplicada]);
+
   useEffect(() => {
     let cancelado = false;
     async function cargar() {
@@ -47,10 +59,13 @@ function AdministrarGrupos() {
     return () => { cancelado = true; };
   }, [pagina, buscarAplicada]);
 
+  // Enter aplica la búsqueda en el momento, sin esperar
   function buscarGrupos(event) {
     event.preventDefault();
+    const texto = buscar.trim();
+    if (texto === buscarAplicada) return;
     setPagina(1);
-    setBuscarAplicada(buscar.trim());
+    setBuscarAplicada(texto);
   }
 
   async function confirmarEliminacion() {
@@ -117,11 +132,11 @@ function AdministrarGrupos() {
             placeholder="Nombre del grupo"
           />
         </label>
-        <button type="submit" className="grupos__buscar">Buscar</button>
       </form>
 
       {error && <p className="grupos__error" role="alert">{error}</p>}
-      {cargando ? (
+      {/* Mientras se busca se deja la tabla anterior, así no parpadea en cada tecla */}
+      {cargando && grupos.length === 0 ? (
         <p className="grupos__estado">Cargando grupos…</p>
       ) : grupos.length === 0 ? (
         <p className="grupos__estado">No se encontraron grupos.</p>

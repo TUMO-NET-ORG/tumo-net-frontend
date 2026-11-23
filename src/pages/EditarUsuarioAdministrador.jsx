@@ -43,6 +43,22 @@ function fechaActualLocal() {
   return `${anio}-${mes}-${dia}`;
 }
 
+// Avisa qué grupos impiden el cambio, con un link a cada uno para reasignar al responsable.
+function AvisoGrupos({ bloqueo }) {
+  return (
+    <div className="administracion__aviso-grupos" role="alert">
+      <p>{bloqueo.mensaje}</p>
+      <ul>
+        {bloqueo.grupos.map((grupo) => (
+          <li key={grupo.id}>
+            <Link to={`/administracion/grupos/${grupo.id}/editar`}>{grupo.nombre}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function EditarUsuarioAdministrador() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -59,6 +75,9 @@ function EditarUsuarioAdministrador() {
   const [cambiandoEstado, setCambiandoEstado] = useState(false);
   const [estadoActual, setEstadoActual] = useState('');
   const [estadoPendiente, setEstadoPendiente] = useState(null);
+  // { seccion: 'datos' | 'estado', mensaje, grupos: [{ id, nombre }] } cuando el backend
+  // rechaza el cambio porque algún grupo quedaría sin responsable.
+  const [bloqueoGrupos, setBloqueoGrupos] = useState(null);
   const [confirmarRestablecimiento, setConfirmarRestablecimiento] = useState(false);
   const [passwordTemporal, setPasswordTemporal] = useState('');
   const [restableciendoPassword, setRestableciendoPassword] = useState(false);
@@ -127,6 +146,7 @@ function EditarUsuarioAdministrador() {
 
   async function confirmarCambioEstado() {
     setError('');
+    setBloqueoGrupos(null);
     setCambiandoEstado(true);
     try {
       const resultado = await cambiarEstadoUsuarioAdministracion(
@@ -136,6 +156,15 @@ function EditarUsuarioAdministrador() {
       setEstadoActual(resultado.usuario.estado);
       setEstadoPendiente(null);
     } catch (err) {
+      if (err.response?.data?.error === 'UNICO_RESPONSABLE_DE_GRUPOS') {
+        setEstadoPendiente(null);
+        setBloqueoGrupos({
+          seccion: 'estado',
+          mensaje: 'No se puede dar de baja: es el único responsable de estos grupos. Asigná otro responsable primero.',
+          grupos: err.response.data.grupos || [],
+        });
+        return;
+      }
       setError(
         err.response?.status === 403
           ? 'No tenés permisos para cambiar estados'
@@ -209,6 +238,7 @@ function EditarUsuarioAdministrador() {
     event.preventDefault();
     setError('');
     setErroresCampos([]);
+    setBloqueoGrupos(null);
 
     if (!cedulaValida(form.documento)) {
       setError(MENSAJE_CEDULA);
@@ -246,6 +276,12 @@ function EditarUsuarioAdministrador() {
         setError('No tenés permisos para editar usuarios');
       } else if (err.response.status === 404) {
         setError('El usuario no existe');
+      } else if (err.response.data?.error === 'RESPONSABLE_DE_GRUPOS') {
+        setBloqueoGrupos({
+          seccion: 'datos',
+          mensaje: 'No se puede cambiar a ese rol: es responsable de estos grupos. Asigná otro responsable primero.',
+          grupos: err.response.data.grupos || [],
+        });
       } else if (err.response.status === 409) {
         setError(
           err.response.data?.error === 'EMAIL_DUPLICADO'
@@ -333,6 +369,7 @@ function EditarUsuarioAdministrador() {
           value={form.urlPortfolio} onChange={handleChange} maxLength={500} />
 
         {error && <p className="auth__error">{error}</p>}
+        {bloqueoGrupos?.seccion === 'datos' && <AvisoGrupos bloqueo={bloqueoGrupos} />}
 
         <button type="submit" className="auth__boton" disabled={guardando}>
           {guardando ? 'Guardando...' : 'Guardar cambios'}
@@ -363,6 +400,7 @@ function EditarUsuarioAdministrador() {
               ))}
           </div>
         )}
+        {bloqueoGrupos?.seccion === 'estado' && <AvisoGrupos bloqueo={bloqueoGrupos} />}
       </section>
 
       {puedeCambiarEstado && (

@@ -105,6 +105,10 @@
   color: var(--color-texto-suave);
 }
 
+.auth__ayuda--error {
+  color: var(--color-error);
+}
+
 .auth__check {
   display: flex;
   align-items: center;
