@@ -50,7 +50,9 @@
 .grupos__seleccion h2 { margin: 0 0 12px; font-size: 1.1rem; }
 .grupos__selector-boton { width: 100%; padding: 11px 14px; border: none; border-radius: 10px; background: var(--color-primario); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
 .grupos__seleccionados { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
-.grupos__seleccionados li { padding: 7px 10px; border-radius: 999px; background: var(--color-superficie); color: var(--color-texto); font-size: .9rem; }
+.grupos__seleccionados li { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 999px; background: var(--color-superficie); color: var(--color-texto); font-size: .9rem; }
+.grupos__quitar { display: inline-grid; place-items: center; width: 22px; height: 22px; padding: 0; border: none; border-radius: 50%; background: transparent; color: var(--color-texto-suave); font: inherit; font-size: 1.1rem; line-height: 1; cursor: pointer; }
+.grupos__quitar:hover, .grupos__quitar:focus-visible { background: var(--color-borde); color: var(--color-texto); }
 .grupos__modal-fondo { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 20px; background: rgb(31 41 55 / 45%); }
 .grupos__modal { width: min(100%, 520px); max-height: min(85vh, 680px); padding: 24px; overflow: auto; border: 1px solid var(--color-borde); border-radius: 16px; background: var(--color-fondo); box-shadow: 0 18px 48px rgb(31 41 55 / 25%); }
 .grupos__modal h2 { margin: 0 0 16px; }

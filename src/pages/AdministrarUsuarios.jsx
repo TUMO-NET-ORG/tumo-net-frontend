@@ -21,6 +21,7 @@ const ESTADOS = [
 ];
 
 const TAMANIO_PAGINA = 20;
+const ESPERA_BUSQUEDA_MS = 300;
 
 function nombreEstado(estado) {
   return ESTADOS.find(([clave]) => clave === estado)?.[1] || estado;
@@ -83,6 +84,19 @@ function AdministrarUsuarios() {
       cancelado = true;
     };
   }, [busquedaAplicada, rol, estado, pagina]);
+
+  // Busca mientras se escribe: espera a que se deje de tipear un momento para no
+  // pedirle al servidor una búsqueda por cada letra.
+  useEffect(() => {
+    const texto = busqueda.trim();
+    const temporizador = setTimeout(() => {
+      if (texto !== busquedaAplicada) {
+        setPagina(1);
+        setBusquedaAplicada(texto);
+      }
+    }, ESPERA_BUSQUEDA_MS);
+    return () => clearTimeout(temporizador);
+  }, [busqueda, busquedaAplicada]);
 
   function buscar(event) {
     event.preventDefault();

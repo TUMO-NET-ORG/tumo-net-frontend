@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout.jsx';
+import { useAuth } from '../context/useAuth';
 import {
   crearGrupo,
   editarGrupo,
@@ -13,9 +14,13 @@ function GestionarGrupo() {
   const { id } = useParams();
   const editar = Boolean(id);
   const navigate = useNavigate();
+  const { usuario: usuarioAutenticado } = useAuth();
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
-  const [responsables, setResponsables] = useState([]);
+  // Al crear, quien crea el grupo queda como responsable por defecto (se puede sacar).
+  const [responsables, setResponsables] = useState(
+    () => (editar || !usuarioAutenticado ? [] : [Number(usuarioAutenticado.id)]),
+  );
   const [integrantes, setIntegrantes] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [cargando, setCargando] = useState(editar);
@@ -71,16 +76,22 @@ function GestionarGrupo() {
   }
 
   function aceptarSeleccion() {
-    const otraSeleccion = panelActivo === 'responsables' ? integrantes : responsables;
-    const repetidos = seleccionPendiente.filter((usuarioId) => otraSeleccion.includes(usuarioId));
-    if (repetidos.length > 0) {
-      setError('Una persona no puede ser responsable e integrante al mismo tiempo');
-      return;
+    if (panelActivo === 'responsables') {
+      // Igual que el backend: si alguien pasa a responsable, deja de ser integrante.
+      setResponsables(seleccionPendiente);
+      setIntegrantes((actuales) => actuales.filter((usuarioId) => !seleccionPendiente.includes(usuarioId)));
+    } else {
+      setIntegrantes(seleccionPendiente);
     }
-
-    if (panelActivo === 'responsables') setResponsables(seleccionPendiente);
-    else setIntegrantes(seleccionPendiente);
     setPanelActivo(null);
+  }
+
+  function quitarResponsable(usuarioId) {
+    setResponsables((actuales) => actuales.filter((idUsuario) => idUsuario !== usuarioId));
+  }
+
+  function quitarIntegrante(usuarioId) {
+    setIntegrantes((actuales) => actuales.filter((idUsuario) => idUsuario !== usuarioId));
   }
 
   function nombreUsuario(usuarioId) {
@@ -105,10 +116,6 @@ function GestionarGrupo() {
     setError('');
     if (responsables.length === 0) {
       setError('Seleccioná al menos un responsable');
-      return;
-    }
-    if (responsables.some((usuarioId) => integrantes.includes(usuarioId))) {
-      setError('Una persona no puede ser responsable e integrante al mismo tiempo');
       return;
     }
 
@@ -156,7 +163,20 @@ function GestionarGrupo() {
             <ul className="grupos__seleccionados">
               {responsables.length === 0
                 ? <li>Ningún responsable seleccionado.</li>
-                : responsables.map((usuarioId) => <li key={usuarioId}>{nombreUsuario(usuarioId)}</li>)}
+                : responsables.map((usuarioId) => (
+                  <li key={usuarioId}>
+                    {nombreUsuario(usuarioId)}
+                    <button
+                      type="button"
+                      className="grupos__quitar"
+                      onClick={() => quitarResponsable(usuarioId)}
+                      aria-label={`Quitar a ${nombreUsuario(usuarioId)} de responsables`}
+                      title="Quitar"
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
             </ul>
           </section>
           <section className="grupos__seleccion">
@@ -167,7 +187,20 @@ function GestionarGrupo() {
             <ul className="grupos__seleccionados">
               {integrantes.length === 0
                 ? <li>Ningún integrante seleccionado.</li>
-                : integrantes.map((usuarioId) => <li key={usuarioId}>{nombreUsuario(usuarioId)}</li>)}
+                : integrantes.map((usuarioId) => (
+                  <li key={usuarioId}>
+                    {nombreUsuario(usuarioId)}
+                    <button
+                      type="button"
+                      className="grupos__quitar"
+                      onClick={() => quitarIntegrante(usuarioId)}
+                      aria-label={`Quitar a ${nombreUsuario(usuarioId)} de integrantes`}
+                      title="Quitar"
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
             </ul>
           </section>
         </div>
