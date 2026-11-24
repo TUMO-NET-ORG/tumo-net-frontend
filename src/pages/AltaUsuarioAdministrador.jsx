@@ -1,17 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout.jsx';
 import Input from '../components/Input.jsx';
 import { crearUsuarioAdministrador } from '../services/usuariosService.js';
 import { MENSAJE_CEDULA, cedulaValida } from '../services/cedula.js';
 import { mensajeDelServidor } from '../services/password.js';
-
-const ROLES = [
-  ['administrador', 'Administrador'],
-  ['alumno', 'Alumno'],
-  ['staff', 'Staff'],
-  ['tutor', 'Tutor'],
-];
+import { useAuth } from '../context/useAuth';
 
 const FORMULARIO_INICIAL = {
   nombre: '',
@@ -32,11 +26,19 @@ function fechaActualLocal() {
 }
 
 function AltaUsuarioAdministrador() {
+  const { roles } = useAuth();
   const [form, setForm] = useState(FORMULARIO_INICIAL);
   const [creado, setCreado] = useState(null);
   const [error, setError] = useState('');
   const [erroresCampos, setErroresCampos] = useState([]);
   const [cargando, setCargando] = useState(false);
+
+  useEffect(() => {
+    if (!roles.length) return;
+    if (!roles.some((rol) => rol.codigo === form.rol)) {
+      setForm((actual) => ({ ...actual, rol: roles.find((rol) => rol.codigo === 'alumno')?.codigo || roles[0].codigo }));
+    }
+  }, [roles, form.rol]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -180,8 +182,8 @@ function AltaUsuarioAdministrador() {
           <label htmlFor="rol" className="auth__label">Rol *</label>
           <select id="rol" name="rol" className="auth__select"
             value={form.rol} onChange={handleChange} required>
-            {ROLES.map(([clave, nombre]) => (
-              <option key={clave} value={clave}>{nombre}</option>
+            {roles.map((rolCatalogo) => (
+              <option key={rolCatalogo.codigo} value={rolCatalogo.codigo}>{rolCatalogo.nombre}</option>
             ))}
           </select>
           {mensajeCampo('rol') && <p className="auth__error">{mensajeCampo('rol')}</p>}

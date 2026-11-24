@@ -20,6 +20,11 @@ export async function listarUsuariosAdministracion(params = {}) {
   return respuesta.data;
 }
 
+export async function listarCatalogosUsuario() {
+  const respuesta = await api.get('/api/v1/usuarios/catalogos');
+  return respuesta.data;
+}
+
 export async function obtenerUsuarioAdministracion(id) {
   const respuesta = await api.get(`/api/v1/usuarios/${id}`);
   return respuesta.data;

@@ -208,29 +208,29 @@ function Registro() {
         {/* auth__fila: dos columnas desde 768px, una sola en el celular */}
         <div className="auth__fila">
           <div className="auth__campo">
-            <Input label="Nombre" id="nombre" name="nombre"
+            <Input label="Nombre *" id="nombre" name="nombre"
               value={form.nombre} onChange={handleChange} maxLength={100} required />
           </div>
           <div className="auth__campo">
-            <Input label="Apellido" id="apellido" name="apellido"
+            <Input label="Apellido *" id="apellido" name="apellido"
               value={form.apellido} onChange={handleChange} maxLength={100} required />
           </div>
         </div>
 
         <div className="auth__fila">
           <div className="auth__campo">
-            <Input label="Cédula de identidad" id="documento" name="documento"
+            <Input label="Cédula de identidad *" id="documento" name="documento"
               value={form.documento} onChange={handleChange} maxLength={20} required
               aria-describedby="documento-ayuda" />
             <p id="documento-ayuda" className="auth__ayuda">Sin puntos ni guiones</p>
           </div>
           <div className="auth__campo">
-            <Input label="Fecha de nacimiento (opcional)" id="fechaNacimiento" name="fechaNacimiento" type="date"
+            <Input label="Fecha de nacimiento" id="fechaNacimiento" name="fechaNacimiento" type="date"
               value={form.fechaNacimiento} onChange={handleChange} />
           </div>
         </div>
         <div className="auth__campo">
-          <Input label="Email" id="email" name="email" type="email"
+          <Input label="Email *" id="email" name="email" type="email"
             value={form.email} placeholder="tu.email@tumo.world" onChange={handleChange} required
             aria-describedby="email-ayuda" />
           <p id="email-ayuda" className="auth__ayuda">Utilizá tu cuenta institucional @tumo.world o @tumo.uy</p>
@@ -238,7 +238,7 @@ function Registro() {
 
         <div className="auth__fila">
           <div className="auth__campo">
-            <PasswordInput label="Contraseña" id="password" name="password" type="password"
+            <PasswordInput label="Contraseña *" id="password" name="password" type="password"
               autoComplete="new-password" minLength={LARGO_MINIMO_PASSWORD} title={MENSAJE_PASSWORD}
               value={form.password} onChange={handleChange} required
               aria-describedby="password-ayuda" />
@@ -257,7 +257,7 @@ function Registro() {
           </div>
         </div>
 
-        <Input label="Portfolio (opcional)" id="urlPortfolio" name="urlPortfolio" type="url"
+        <Input label="Portfolio" id="urlPortfolio" name="urlPortfolio" type="url"
           placeholder="https://..."
           value={form.urlPortfolio} onChange={handleChange} maxLength={500} />
 

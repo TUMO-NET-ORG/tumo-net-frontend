@@ -14,21 +14,6 @@ import { MENSAJE_CEDULA, cedulaValida } from '../services/cedula.js';
 import { mensajeDelServidor } from '../services/password.js';
 import './AdministrarUsuarios.css';
 
-const ROLES = [
-  ['administrador', 'Administrador'],
-  ['alumno', 'Alumno'],
-  ['staff', 'Staff'],
-  ['tutor', 'Tutor'],
-];
-
-const ESTADOS = {
-  activo: 'Activo',
-  inactivo: 'Inactivo',
-  suspendido: 'Suspendido',
-  pendiente_verificacion: 'Pendiente de verificación',
-  dado_de_baja: 'Dado de baja',
-};
-
 const ACCIONES_ESTADO = [
   ['activo', 'Activar'],
   ['dado_de_baja', 'Dar de baja'],
@@ -62,7 +47,7 @@ function AvisoGrupos({ bloqueo }) {
 function EditarUsuarioAdministrador() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { usuario: usuarioAutenticado } = useAuth();
+  const { usuario: usuarioAutenticado, roles, estados } = useAuth();
   const [form, setForm] = useState(null);
   const [original, setOriginal] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -357,8 +342,8 @@ function EditarUsuarioAdministrador() {
           <label htmlFor="rol" className="auth__label">Rol *</label>
           <select id="rol" name="rol" className="auth__select"
             value={form.rol} onChange={handleChange}>
-            {ROLES.map(([clave, nombre]) => (
-              <option key={clave} value={clave}>{nombre}</option>
+            {roles.map((rolCatalogo) => (
+              <option key={rolCatalogo.codigo} value={rolCatalogo.codigo}>{rolCatalogo.nombre}</option>
             ))}
           </select>
         </div>
@@ -380,7 +365,7 @@ function EditarUsuarioAdministrador() {
         <div>
           <h2>Estado del usuario</h2>
           <span className={`administracion__estado-badge administracion__estado-badge--${estadoActual}`}>
-            {ESTADOS[estadoActual] || estadoActual}
+            {estados.find((estadoCatalogo) => estadoCatalogo.codigo === estadoActual)?.nombre || estadoActual}
           </span>
         </div>
         {puedeCambiarEstado && estadoActual !== 'pendiente_verificacion' && (

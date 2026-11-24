@@ -11,12 +11,16 @@ import {
   guardarSesion,
   obtenerToken,
 } from '../services/sesion';
+import { listarCatalogosUsuario } from '../services/usuariosService';
 
 // Mantiene la sesión del usuario (RF7: sin sesión no se ve contenido).
 // Al cargar la app valida el token guardado contra GET /auth/me.
 export function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(null);
   const [cargando, setCargando] = useState(() => Boolean(obtenerToken()));
+  const [roles, setRoles] = useState([]);
+  const [estados, setEstados] = useState([]);
+  const [cargandoCatalogos, setCargandoCatalogos] = useState(false);
 
   useEffect(() => {
     if (!obtenerToken()) {
@@ -45,6 +49,34 @@ export function AuthProvider({ children }) {
     window.addEventListener(EVENTO_SESION_EXPIRADA, alExpirar);
     return () => window.removeEventListener(EVENTO_SESION_EXPIRADA, alExpirar);
   }, []);
+
+  useEffect(() => {
+    if (usuario?.rol !== 'administrador') {
+      setRoles([]);
+      setEstados([]);
+      return;
+    }
+
+    let cancelado = false;
+    setCargandoCatalogos(true);
+    listarCatalogosUsuario()
+      .then((datos) => {
+        if (!cancelado) {
+          setRoles(datos.roles);
+          setEstados(datos.estados);
+        }
+      })
+      .catch(() => {
+        if (!cancelado) {
+          setRoles([]);
+          setEstados([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelado) setCargandoCatalogos(false);
+      });
+    return () => { cancelado = true; };
+  }, [usuario?.rol]);
 
   const login = useCallback(async (email, password) => {
     const datos = await loginApi(email, password);
@@ -76,8 +108,11 @@ export function AuthProvider({ children }) {
       login,
       logout,
       actualizarSesion,
+      roles,
+      estados,
+      cargandoCatalogos,
     }),
-    [usuario, cargando, login, logout, actualizarSesion],
+    [usuario, cargando, login, logout, actualizarSesion, roles, estados, cargandoCatalogos],
   );
 
   return <AuthContext.Provider value={valor}>{children}</AuthContext.Provider>;
