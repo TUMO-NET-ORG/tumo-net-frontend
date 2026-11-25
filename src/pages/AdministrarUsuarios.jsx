@@ -1,38 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { listarUsuariosAdministracion } from '../services/usuariosService.js';
+import { useAuth } from '../context/useAuth';
 import './AdministrarUsuarios.css';
-
-const ROLES = [
-  ['', 'Todos los roles'],
-  ['administrador', 'Administrador'],
-  ['alumno', 'Alumno'],
-  ['staff', 'Staff'],
-  ['tutor', 'Tutor'],
-];
-
-const ESTADOS = [
-  ['', 'Todos los estados'],
-  ['activo', 'Activo'],
-  ['inactivo', 'Inactivo'],
-  ['suspendido', 'Suspendido'],
-  ['pendiente_verificacion', 'Pendiente de verificación'],
-  ['dado_de_baja', 'Dado de baja'],
-];
 
 const TAMANIO_PAGINA = 20;
 const ESPERA_BUSQUEDA_MS = 300;
 
-function nombreEstado(estado) {
-  return ESTADOS.find(([clave]) => clave === estado)?.[1] || estado;
-}
-
-function nombreRol(rol) {
-  return ROLES.find(([clave]) => clave === rol)?.[1] || rol;
-}
-
 function AdministrarUsuarios() {
   const navigate = useNavigate();
+  const { roles, estados } = useAuth();
   const [busqueda, setBusqueda] = useState('');
   const [busquedaAplicada, setBusquedaAplicada] = useState('');
   const [rol, setRol] = useState('');
@@ -47,6 +24,14 @@ function AdministrarUsuarios() {
   });
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
+
+  function nombreEstado(codigo) {
+    return estados.find((estadoCatalogo) => estadoCatalogo.codigo === codigo)?.nombre || codigo;
+  }
+
+  function nombreRol(codigo) {
+    return roles.find((rolCatalogo) => rolCatalogo.codigo === codigo)?.nombre || codigo;
+  }
 
   useEffect(() => {
     let cancelado = false;
@@ -140,16 +125,18 @@ function AdministrarUsuarios() {
         <label>
           <span>Rol</span>
           <select value={rol} onChange={cambiarRol}>
-            {ROLES.map(([clave, nombre]) => (
-              <option key={clave} value={clave}>{nombre}</option>
+            <option value="">Todos los roles</option>
+            {roles.map((rolCatalogo) => (
+              <option key={rolCatalogo.codigo} value={rolCatalogo.codigo}>{rolCatalogo.nombre}</option>
             ))}
           </select>
         </label>
         <label>
           <span>Estado</span>
           <select value={estado} onChange={cambiarEstado}>
-            {ESTADOS.map(([clave, nombre]) => (
-              <option key={clave} value={clave}>{nombre}</option>
+            <option value="">Todos los estados</option>
+            {estados.map((estadoCatalogo) => (
+              <option key={estadoCatalogo.codigo} value={estadoCatalogo.codigo}>{estadoCatalogo.nombre}</option>
             ))}
           </select>
         </label>
