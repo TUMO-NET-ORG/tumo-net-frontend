@@ -12,6 +12,12 @@ import {
 } from '../services/usuariosService.js';
 import { MENSAJE_CEDULA, cedulaValida } from '../services/cedula.js';
 import { mensajeDelServidor } from '../services/password.js';
+import {
+  nombreRol,
+  puedeEditarDatos,
+  rolIgualOInferior,
+  rolesAsignables,
+} from '../data/roles';
 import './AdministrarUsuarios.css';
 
 const ACCIONES_ESTADO = [
@@ -67,7 +73,24 @@ function EditarUsuarioAdministrador() {
   const [passwordTemporal, setPasswordTemporal] = useState('');
   const [restableciendoPassword, setRestableciendoPassword] = useState(false);
   const [passwordCopiada, setPasswordCopiada] = useState(false);
-  const puedeCambiarEstado = String(usuarioAutenticado?.id) !== String(id);
+
+  // Permisos según la jerarquía de roles (el backend los vuelve a controlar):
+  //  - rol y estado: usuarios con rol igual o inferior, nunca uno mismo;
+  //  - datos, email y contraseña: alumnos para cualquier trabajador, trabajadores
+  //    solo para administrador o superadmin.
+  const rolActor = usuarioAutenticado?.rol;
+  const rolObjetivo = original?.rol;
+  const esUnoMismo = String(usuarioAutenticado?.id) === String(id);
+  const puedeGestionar = rolIgualOInferior(rolObjetivo, rolActor);
+  const puedeEditarLosDatos = puedeEditarDatos(rolActor, rolObjetivo);
+  const puedeCambiarRol = puedeGestionar && !esUnoMismo;
+  const puedeCambiarEstado = puedeGestionar && !esUnoMismo;
+  const puedeGestionarCuenta = puedeEditarLosDatos && !esUnoMismo;
+  // Opciones del select de rol, con los nombres del catálogo del backend.
+  // Si no se puede cambiar, solo se muestra el rol actual.
+  const opcionesRol = puedeCambiarRol
+    ? rolesAsignables(roles, rolActor)
+    : [roles.find((rol) => rol.codigo === rolObjetivo) || { codigo: rolObjetivo, nombre: nombreRol(rolObjetivo) }];
 
   useEffect(() => {
     let cancelado = false;
@@ -152,7 +175,7 @@ function EditarUsuarioAdministrador() {
       }
       setError(
         err.response?.status === 403
-          ? 'No tenés permisos para cambiar estados'
+          ? err.response?.data?.mensaje || 'No tenés permisos para cambiar estados'
           : err.response?.status === 400
             ? err.response?.data?.error === 'DATOS_INVALIDOS'
               ? 'El estado seleccionado no es válido'
@@ -180,6 +203,8 @@ function EditarUsuarioAdministrador() {
         setError('No podés restablecer tu propia contraseña desde acá');
       } else if (err.response?.data?.error === 'USUARIO_NO_ENCONTRADO') {
         setError('El usuario no existe. Volvé al listado para actualizarlo.');
+      } else if (err.response?.status === 403) {
+        setError(err.response.data?.mensaje || 'No tenés permisos para restablecer esta contraseña');
       } else {
         setError('No se pudo restablecer la contraseña');
       }
@@ -212,7 +237,9 @@ function EditarUsuarioAdministrador() {
           ? mensajeDelServidor(err) || 'El email no es válido'
           : err.response?.status === 409
             ? 'Ese email ya está registrado'
-            : 'No se pudo enviar el enlace de confirmación',
+            : err.response?.status === 403
+              ? err.response.data?.mensaje || 'No tenés permisos para cambiar este email'
+              : 'No se pudo enviar el enlace de confirmación',
       );
     } finally {
       setCambiandoEmail(false);
@@ -258,7 +285,7 @@ function EditarUsuarioAdministrador() {
       if (!err.response) {
         setError('No se pudo conectar con el servidor');
       } else if (err.response.status === 403) {
-        setError('No tenés permisos para editar usuarios');
+        setError(err.response.data?.mensaje || 'No tenés permisos para editar este usuario');
       } else if (err.response.status === 404) {
         setError('El usuario no existe');
       } else if (err.response.data?.error === 'RESPONSABLE_DE_GRUPOS') {
@@ -277,7 +304,9 @@ function EditarUsuarioAdministrador() {
         setErroresCampos(err.response.data.detalles || []);
         setError(mensajeDelServidor(err) || 'Revisá los datos ingresados');
       } else if (err.response.data?.error === 'AUTO_CAMBIO_ROL') {
-        setError('No podés quitarte a vos mismo el rol de administrador');
+        setError('No podés cambiar tu propio rol');
+      } else if (err.response.data?.error === 'ULTIMO_SUPERADMIN') {
+        setError('Es el único superadmin activo: no se le puede quitar el rol');
       } else {
         setError('No se pudo editar el usuario');
       }
@@ -306,19 +335,27 @@ function EditarUsuarioAdministrador() {
     <AuthLayout amplio>
       <header className="auth__encabezado">
         <h1 className="auth__titulo">Editar usuario</h1>
-        <p className="auth__subtitulo">Modificá los datos de la cuenta.</p>
+        <p className="auth__subtitulo">
+          {!puedeGestionar
+            ? 'Tiene un rol superior al tuyo: solo podés ver sus datos.'
+            : !puedeEditarLosDatos
+              ? 'Solo un administrador puede modificar los datos de otro trabajador. Vos podés cambiar su rol y su estado.'
+              : 'Modificá los datos de la cuenta.'}
+        </p>
       </header>
 
       <form className="auth__form" onSubmit={handleGuardar}>
         <div className="auth__fila">
           <div className="auth__campo">
             <Input label="Nombre *" id="nombre" name="nombre"
-              value={form.nombre} onChange={handleChange} maxLength={100} required />
+              value={form.nombre} onChange={handleChange} maxLength={100} required
+              disabled={!puedeEditarLosDatos} />
             {mensajeCampo('nombre') && <p className="auth__error">{mensajeCampo('nombre')}</p>}
           </div>
           <div className="auth__campo">
             <Input label="Apellido *" id="apellido" name="apellido"
-              value={form.apellido} onChange={handleChange} maxLength={100} required />
+              value={form.apellido} onChange={handleChange} maxLength={100} required
+              disabled={!puedeEditarLosDatos} />
             {mensajeCampo('apellido') && <p className="auth__error">{mensajeCampo('apellido')}</p>}
           </div>
         </div>
@@ -326,39 +363,45 @@ function EditarUsuarioAdministrador() {
         <div className="auth__fila">
           <div className="auth__campo">
             <Input label="Cédula de identidad *" id="documento" name="documento"
-              value={form.documento} onChange={handleChange} maxLength={20} required />
+              value={form.documento} onChange={handleChange} maxLength={20} required
+              disabled={!puedeEditarLosDatos} />
           </div>
           <div className="auth__campo">
             <Input label="Fecha de nacimiento" id="fechaNacimiento" name="fechaNacimiento"
               type="date" value={form.fechaNacimiento} onChange={handleChange}
-              max={fechaActualLocal()} />
+              max={fechaActualLocal()}
+              disabled={!puedeEditarLosDatos} />
           </div>
         </div>
 
         <Input label="Email *" id="email" name="email" type="email"
-          value={form.email} readOnly />
+          value={form.email} disabled />
 
         <div className="auth__campo">
           <label htmlFor="rol" className="auth__label">Rol *</label>
           <select id="rol" name="rol" className="auth__select"
-            value={form.rol} onChange={handleChange}>
-            {roles.map((rolCatalogo) => (
+            value={form.rol} onChange={handleChange} disabled={!puedeCambiarRol}>
+            {opcionesRol.map((rolCatalogo) => (
               <option key={rolCatalogo.codigo} value={rolCatalogo.codigo}>{rolCatalogo.nombre}</option>
             ))}
           </select>
         </div>
 
         <Input label="Foto" id="fotoUrl" name="fotoUrl" type="url"
-          value={form.fotoUrl} onChange={handleChange} maxLength={500} />
+          value={form.fotoUrl} onChange={handleChange} maxLength={500}
+          disabled={!puedeEditarLosDatos} />
         <Input label="Portfolio" id="urlPortfolio" name="urlPortfolio" type="url"
-          value={form.urlPortfolio} onChange={handleChange} maxLength={500} />
+          value={form.urlPortfolio} onChange={handleChange} maxLength={500}
+          disabled={!puedeEditarLosDatos} />
 
         {error && <p className="auth__error">{error}</p>}
         {bloqueoGrupos?.seccion === 'datos' && <AvisoGrupos bloqueo={bloqueoGrupos} />}
 
-        <button type="submit" className="auth__boton" disabled={guardando}>
-          {guardando ? 'Guardando...' : 'Guardar cambios'}
-        </button>
+        {(puedeEditarLosDatos || puedeCambiarRol) && (
+          <button type="submit" className="auth__boton" disabled={guardando}>
+            {guardando ? 'Guardando...' : 'Guardar cambios'}
+          </button>
+        )}
       </form>
 
       <section className="administracion__estado-cambio">
@@ -388,7 +431,7 @@ function EditarUsuarioAdministrador() {
         {bloqueoGrupos?.seccion === 'estado' && <AvisoGrupos bloqueo={bloqueoGrupos} />}
       </section>
 
-      {puedeCambiarEstado && (
+      {puedeGestionarCuenta && (
         <section className="administracion__email-cambio">
             <h2>Solicitar cambio de email</h2>
             <p>La dirección actual no se modifica hasta confirmar el enlace enviado al nuevo email.</p>
@@ -403,7 +446,7 @@ function EditarUsuarioAdministrador() {
         </section>
       )}
 
-      {puedeCambiarEstado && (
+      {puedeGestionarCuenta && (
         <section className="administracion__email-cambio">
           <h2>Restablecer contraseña</h2>
           <p>Se generará una contraseña temporal que el usuario deberá cambiar en su próximo ingreso.</p>

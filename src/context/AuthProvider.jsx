@@ -12,6 +12,7 @@ import {
   obtenerToken,
 } from '../services/sesion';
 import { listarCatalogosUsuario } from '../services/usuariosService';
+import { esTrabajador } from '../data/roles';
 
 // Mantiene la sesión del usuario (RF7: sin sesión no se ve contenido).
 // Al cargar la app valida el token guardado contra GET /auth/me.
@@ -51,7 +52,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (usuario?.rol !== 'administrador') {
+    // Los catálogos los usan las pantallas de administración, que ven todos los trabajadores.
+    if (!esTrabajador(usuario?.rol)) {
       setRoles([]);
       setEstados([]);
       return;

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { listarUsuariosAdministracion } from '../services/usuariosService.js';
 import { useAuth } from '../context/useAuth';
+import { rolIgualOInferior } from '../data/roles';
 import './AdministrarUsuarios.css';
 
 const TAMANIO_PAGINA = 20;
@@ -9,7 +10,7 @@ const ESPERA_BUSQUEDA_MS = 300;
 
 function AdministrarUsuarios() {
   const navigate = useNavigate();
-  const { roles, estados } = useAuth();
+  const { usuario: usuarioAutenticado, roles, estados } = useAuth();
   const [busqueda, setBusqueda] = useState('');
   const [busquedaAplicada, setBusquedaAplicada] = useState('');
   const [rol, setRol] = useState('');
@@ -177,13 +178,16 @@ function AdministrarUsuarios() {
                       </span>
                     </td>
                     <td>
-                      <button
-                        type="button"
-                        className="administracion__editar"
-                        onClick={() => navigate(`/administracion/usuarios/${usuario.id}/editar`)}
-                      >
-                        Editar
-                      </button>
+                      {/* Solo se gestiona a usuarios con rol igual o inferior al propio */}
+                      {rolIgualOInferior(usuario.rol, usuarioAutenticado?.rol) && (
+                        <button
+                          type="button"
+                          className="administracion__editar"
+                          onClick={() => navigate(`/administracion/usuarios/${usuario.id}/editar`)}
+                        >
+                          Editar
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
