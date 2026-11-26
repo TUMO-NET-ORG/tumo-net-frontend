@@ -36,14 +36,16 @@ function OlvideContrasena() {
         {!enviado && (
           <p className="auth__subtitulo">
             Ingresá tu email y te enviaremos un enlace para crear una nueva contraseña.
+            Si te crearon una cuenta y el enlace para activarla venció, también te
+            enviaremos uno nuevo.
           </p>
         )}
       </header>
 
       {enviado ? (
         <p className="auth__exito">
-          Si el email está registrado, te enviamos un enlace para restablecer tu contraseña.
-          Revisá tu bandeja de entrada y la carpeta de spam.
+          Si el email está registrado, te enviamos un enlace para restablecer tu contraseña
+          (o para activar tu cuenta, si todavía no la activaste). Revisá tu bandeja de entrada y la carpeta de spam.
         </p>
       ) : (
         <form className="auth__form" onSubmit={handleSubmit}>

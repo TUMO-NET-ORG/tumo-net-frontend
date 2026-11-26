@@ -6,6 +6,7 @@ import { crearUsuarioAdministrador } from '../services/usuariosService.js';
 import { MENSAJE_CEDULA, cedulaValida } from '../services/cedula.js';
 import { mensajeDelServidor } from '../services/password.js';
 import { useAuth } from '../context/useAuth';
+import { rolesAsignables } from '../data/roles';
 
 const FORMULARIO_INICIAL = {
   nombre: '',
@@ -26,7 +27,9 @@ function fechaActualLocal() {
 }
 
 function AltaUsuarioAdministrador() {
-  const { roles } = useAuth();
+  const { usuario: usuarioAutenticado, roles } = useAuth();
+  // Solo se pueden asignar roles iguales o inferiores al propio.
+  const rolesDisponibles = rolesAsignables(roles, usuarioAutenticado?.rol);
   const [form, setForm] = useState(FORMULARIO_INICIAL);
   const [creado, setCreado] = useState(null);
   const [error, setError] = useState('');
@@ -34,11 +37,14 @@ function AltaUsuarioAdministrador() {
   const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
-    if (!roles.length) return;
-    if (!roles.some((rol) => rol.codigo === form.rol)) {
-      setForm((actual) => ({ ...actual, rol: roles.find((rol) => rol.codigo === 'alumno')?.codigo || roles[0].codigo }));
+    if (!rolesDisponibles.length) return;
+    if (!rolesDisponibles.some((rol) => rol.codigo === form.rol)) {
+      setForm((actual) => ({
+        ...actual,
+        rol: rolesDisponibles.find((rol) => rol.codigo === 'alumno')?.codigo || rolesDisponibles[0].codigo,
+      }));
     }
-  }, [roles, form.rol]);
+  }, [rolesDisponibles, form.rol]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -86,7 +92,7 @@ function AltaUsuarioAdministrador() {
       if (!err.response) {
         setError('No se pudo conectar con el servidor');
       } else if (err.response.status === 403) {
-        setError('No tenés permisos para crear usuarios');
+        setError(err.response.data?.mensaje || 'No tenés permisos para crear usuarios');
       } else if (err.response.status === 409) {
         setError(
           err.response.data?.error === 'EMAIL_DUPLICADO'
@@ -182,7 +188,7 @@ function AltaUsuarioAdministrador() {
           <label htmlFor="rol" className="auth__label">Rol *</label>
           <select id="rol" name="rol" className="auth__select"
             value={form.rol} onChange={handleChange} required>
-            {roles.map((rolCatalogo) => (
+            {rolesDisponibles.map((rolCatalogo) => (
               <option key={rolCatalogo.codigo} value={rolCatalogo.codigo}>{rolCatalogo.nombre}</option>
             ))}
           </select>

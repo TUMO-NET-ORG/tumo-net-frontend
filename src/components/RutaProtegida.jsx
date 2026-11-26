@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
+import { esTrabajador } from '../data/roles';
 
 // RF7: ningún contenido es visible sin iniciar sesión.
 export function RutaProtegida() {
@@ -24,7 +25,8 @@ export function RutaProtegida() {
   return <Outlet />;
 }
 
-// Solo los administradores pueden acceder a la administración de usuarios.
+// Administración de usuarios: todos los trabajadores (todos menos alumno).
+// Qué puede hacer cada uno sobre cada usuario lo controla el backend.
 export function RutaAdministrador() {
   const { usuario, autenticado, cargando } = useAuth();
   const location = useLocation();
@@ -37,7 +39,7 @@ export function RutaAdministrador() {
     return <Navigate to="/login" replace state={{ desde: location.pathname }} />;
   }
 
-  if (usuario.rol !== 'administrador') {
+  if (!esTrabajador(usuario.rol)) {
     return <Navigate to="/inicio" replace />;
   }
 
@@ -56,7 +58,7 @@ export function RutaGestionGrupos() {
     return <Navigate to="/login" replace state={{ desde: location.pathname }} />;
   }
 
-  if (!['administrador', 'staff', 'tutor'].includes(usuario.rol)) {
+  if (!esTrabajador(usuario.rol)) {
     return <Navigate to="/inicio" replace />;
   }
 

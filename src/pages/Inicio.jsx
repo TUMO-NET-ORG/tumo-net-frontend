@@ -11,9 +11,11 @@ import {
   listarDisciplinasPublicacion,
   listarPublicaciones,
 } from '../services/publicacionesService';
+import { esTrabajador } from '../data/roles';
 import './Inicio.css';
 
 const NOMBRES_ROL = {
+  superadmin: 'Superadmin',
   administrador: 'Administrador',
   alumno: 'Alumno',
   staff: 'Staff',
@@ -407,7 +409,7 @@ function Inicio() {
               <Icono nombre="inicio" relleno tamano={22} />
               Inicio
             </button>
-            {usuario.rol === 'administrador' && (
+            {esTrabajador(usuario.rol) && (
               <>
                 <button
                   type="button"
@@ -427,7 +429,7 @@ function Inicio() {
                 </button>
               </>
             )}
-            {['administrador', 'staff', 'tutor'].includes(usuario.rol) && (
+            {esTrabajador(usuario.rol) && (
               <button
                 type="button"
                 className="feed__nav-item"
@@ -693,7 +695,7 @@ function Inicio() {
             <p className="feed__hace">{usuario.email}</p>
             <span className="feed__rol">{rol}</span>
 
-            {usuario.rol === 'administrador' && (
+            {esTrabajador(usuario.rol) && (
               <>
                 <button
                   type="button"
